@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inscrição MINDTECH</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(to right, #4e54c8, #8f94fb);
+    }
+
+    .container {
+      background: white;
+      padding: 40px 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      width: 350px;
+      text-align: center;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      margin-bottom: 20px;
+    }
+
+    .logo-container img {
+      width: 50px;
+      height: 50px;
+      object-fit: contain;
+      margin-right: 10px;
+    }
+
+    .logo-container h1 {
+      font-size: 24px;
+      color: #4e54c8;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    input {
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    button {
+      padding: 12px;
+      background: #4e54c8;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #3b40a4;
+    }
+
+    .success, .error {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    .success {
+      color: green;
+    }
+
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo-container">
+      <img src="logo.png" alt="Logo MINDTECH">
+      <h1>MINDTECH</h1>
+    </div>
+
+    <form id="inscricaoForm">
+      <input type="text" name="nome" placeholder="Nome completo" required>
+      <input type="email" name="email" placeholder="Email" required>
+      <input type="password" name="senha" placeholder="Senha" required>
+      <button type="submit">Inscrever-se</button>
+    </form>
+
+    <div class="success" id="successMsg"></div>
+    <div class="error" id="errorMsg"></div>
+  </div>
+
+  <script>
+    const form = document.getElementById('inscricaoForm');
+    const successMsg = document.getElementById('successMsg');
+    const errorMsg = document.getElementById('errorMsg');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      successMsg.textContent = '';
+      errorMsg.textContent = '';
+
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+
+      try {
+        const response = await fetch('http://localhost:3000/inscricao', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+        if(response.ok){
+          successMsg.textContent = result.message;
+          form.reset();
+        } else {
+          errorMsg.textContent = result.error;
+        }
+      } catch (err) {
+        errorMsg.textContent = 'Erro de conexão com o servidor.';
+      }
+    });
+  </script>
+</body>
+</html>
